@@ -1,5 +1,5 @@
 // Importe de classes
-import { Personagem } from "./Personagem";
+import { Personagem } from "./classes/Personagem";
 import Prompt from "prompt-sync";
 
 const teclado = Prompt();

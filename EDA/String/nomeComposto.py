@@ -1,11 +1,18 @@
-nome = input("Nome completo: ")
+while True:
 
-partes = nome.split()
-tam = len(partes)
+    nome = input("Nome completo: ")
 
-if tam < 1:
-    print("Nome incompleto")
-else:
-    print(f"Nome completo: {nome}")
-    print(f"Nome no cracha: {partes[0].upper}")
+    partes = nome.split()
+
+    print("-"*30)
+
+    if len(partes) >= 2:
+        print(f"Nome completo: {nome}")
+        print(f"Nome no cracha: {partes[0].upper()}")
+        break
+    else:
+        print(f"Nome completo: {nome}")
+        print("Ops... Por favor, informe o nome completo")
+
+    print("-"*30)
     
