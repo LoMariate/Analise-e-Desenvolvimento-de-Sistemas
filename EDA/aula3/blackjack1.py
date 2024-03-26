@@ -45,6 +45,7 @@ while True:
     compra_carta(oponent, mao_oponent)
    
     print(f"Carta {contador} do jogador: {jogador[-1]}")
+    time.sleep(1)
     print(f"Carta {contador} do oponente: {oponent[-1]}")
     
     total = sum(mao)
@@ -53,12 +54,28 @@ while True:
     print(f"Total do jogador: {total}")
     print(f"Total do oponente: {totalOponent}")
     
-    time.sleep(2)
+    
     if contador == 2:
         break
     
 
-    
+while True:
+    if total < 21:
+        escolha = input("Deseja comprar mais uma carta? (s/n)").upper()
+        if escolha == 'S':
+            compra_carta(jogador, mao)
+            print(f"Carta {contador} do jogador: {jogador[-1]}")
+            total = sum(mao)
+            print(f"Total do jogador: {total}")
+        else:
+            break
+    if total > 21:
+        print("O jogador estourou!")
+        
+        break
+    if total == 21:
+        print("O jogador fez 21!")
+        break
     
     
     
