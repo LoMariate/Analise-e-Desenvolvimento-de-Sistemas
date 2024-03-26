@@ -69,17 +69,32 @@ while True:
             print(f"Total do jogador: {total}")
         else:
             break
+    else:
+        break
+    
+while True:
+    if totalOponent < 17:
+        compra_carta(oponent, mao_oponent)
+        print(f"Carta {contador} do oponente: {oponent[-1]}")
+        totalOponent = sum(mao_oponent)
+        print(f"Total do oponente: {totalOponent}")
+    else:
+        break
+    
+    
+while True:
     if total > 21:
         print("O jogador estourou!")
-        
+        break
+    if totalOponent > 21:
+        print("O oponente estourou!")
         break
     if total == 21:
         print("O jogador fez 21!")
         break
-    
-    
-    
-while True:
+    if totalOponent == 21:
+        print("O oponente fez 21!")
+        break
     if total > totalOponent:
         print("O jogador venceu!")
         break
@@ -88,5 +103,5 @@ while True:
         break
     if total == totalOponent:
         print("Empate!")
-        break
+        break     
     
