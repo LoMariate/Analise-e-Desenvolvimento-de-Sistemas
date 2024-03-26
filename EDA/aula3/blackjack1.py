@@ -37,7 +37,7 @@ def compra_carta(jogador, mao):
 monta_baralho()
 random.shuffle(baralho)
 
-contador = 0
+contador  = 0
 while True:
     contador += 1
     
