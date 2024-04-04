@@ -19,3 +19,7 @@ function gerarArma() {
     let arma: Arma = new Arma();
 }
 
+export function treinar() {
+    personagem.ataque += Math.floor(Math.random() * 10) + 1;
+    personagem.defesa += Math.floor(Math.random() * 10) + 1;
+}

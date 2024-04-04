@@ -1,5 +1,7 @@
 // Importe de classes
 import { Personagem } from "./classes/Personagem";
+import { treinar } from "./classes/Personagem";
+
 import Prompt from "prompt-sync";
 
 const teclado = Prompt();
@@ -16,7 +18,7 @@ let personagem: Personagem = new Personagem(teclado("Informe o nome do primeiro 
 
 while(true) {
 console.log("+---------------------------------------------------+")
-console.log("| 1. Gerar Arma                                     |")
+console.log("| 1. Treinar                                        |")
 console.log("| 2. Info Personagem                                |")
 console.log("| 0. Sair                                           |")
 console.log("+---------------------------------------------------+")
@@ -29,7 +31,7 @@ if (escolha == 0){
 
 switch (escolha) {
     case 1:
-        
+        treinar()
         break;
     case 2:
         console.table(personagem)
