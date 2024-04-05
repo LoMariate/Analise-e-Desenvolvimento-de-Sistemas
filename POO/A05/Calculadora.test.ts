@@ -7,11 +7,11 @@ let calc: Calculadora;
 
 beforeAll(() => {
     console.log("Before All");
-}
+})
 
 beforeEach(() => {
     calc = new Calculadora();
-}
+})
 
 
 
@@ -37,6 +37,4 @@ describe("Divisão", () => {
     it("Deve apresentar mensagem de erro quando dividir por zero", () => {
         expect(() => calc.dividir(10, 0)).toThrow("Não é possível dividir por zero");
     });
-})
-
-
+});
