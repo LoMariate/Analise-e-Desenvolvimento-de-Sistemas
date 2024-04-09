@@ -97,5 +97,7 @@ while True:
     else:
         print("Opção Inválida. Tente Novamente!")
         input("Pressione ENTER para continuar...")
+        
+
 
 
