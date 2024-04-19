@@ -74,9 +74,9 @@ quadroFinal = [[1, 2, 3],
                [4, 5, 6],
                [7, 8, 0]]
 
-quadroInicial = [[5, 8, 0], 
-                 [6, 4, 7], 
-                 [2, 3, 1]]
+quadroInicial = [[0, 2, 1], 
+                 [6, 5, 4], 
+                 [3, 8, 7]]
 
 caminho = a_estrela(quadroInicial, quadroFinal)
 if caminho is not None:
