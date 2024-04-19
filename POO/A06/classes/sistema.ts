@@ -26,12 +26,11 @@ class Sistema {
     }
 
     public static cancelarReserva(reserva: Reserva): void {
-        Sistema.reservas.push(reserva);
         const index = Sistema.reservas.indexOf(reserva);
         if (index !== -1) {
             Sistema.reservas.splice(index, 1);
+            Sistema.cadastrarQuadra(reserva.quadra.nome, reserva.quadra.esporte);
         }
-        Sistema.cadastrarQuadra(reserva.quadra.nome, reserva.quadra.esporte);
     }
 }
 

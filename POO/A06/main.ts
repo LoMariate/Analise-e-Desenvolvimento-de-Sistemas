@@ -23,25 +23,40 @@ while (true) {
             Sistema.cadastrarQuadra(nome, esporte)
             break;
         case 2:
+            if (Sistema.listarQuadrasDisponiveis().length === 0){
+                console.log("Não há quadras disponíveis")
+                break;
+            }
+
             let cliente: string = teclado("Informe o nome do cliente: ")
             quadrasDisponiveis = Sistema.listarQuadrasDisponiveis()
+
             console.log("Quadras disponíveis:")
-            quadrasDisponiveis.forEach((quadra, index) => {
-            console.log(`${index + 1}. ${quadra.nome} (${quadra.esporte})`)
-            })
+            quadrasDisponiveis.forEach((quadra, index) => {console.log(`${index + 1}. ${quadra.nome} (${quadra.esporte})`)})
+
             let quadraEscolhida: number = +teclado("Escolha a quadra: ") - 1
             Sistema.reservarQuadra(cliente, quadrasDisponiveis[quadraEscolhida], new Date())
             break;
         case 3:
+            if (Sistema.listarQuadrasDisponiveis().length === 0){
+                console.log("Não há quadras disponíveis")
+                break;
+            }
+
             quadrasDisponiveis = Sistema.listarQuadrasDisponiveis()
             console.log("Quadras disponíveis:")
             quadrasDisponiveis.forEach((quadra) => {
                 console.log(`- ${quadra.nome} (${quadra.esporte})`)
-                console.table(quadra)
             })
             break;
         case 4:
             let reservas = Sistema.listarReservas()
+
+            if (reservas.length === 0){
+                console.log("Não há reservas feitas")
+                break;
+            }
+
             console.log("Reservas feitas:")
             reservas.forEach((reserva) => {
                 console.log(`- ${reserva.cliente} reservou a quadra ${reserva.quadra.nome} (${reserva.quadra.esporte}) em ${reserva.data}`)
@@ -54,8 +69,13 @@ while (true) {
                 console.log(`${index}. ${reserva.cliente} reservou a quadra ${reserva.quadra.nome} (${reserva.quadra.esporte}) em ${reserva.data}`)
             })
             let reservaCancelada: number = +teclado("Escolha a reserva a ser cancelada: ")
-            Sistema.cancelarReserva(reservasFeitas[reservaCancelada])
-            reservasFeitas.splice(reservaCancelada, 1)
+            let reservaSelecionada = reservasFeitas[reservaCancelada]
+            if (reservaSelecionada) {
+                Sistema.cancelarReserva(reservaSelecionada)
+                reservasFeitas.splice(reservaCancelada, 1)
+            } else {
+                console.log("Reserva inválida")
+            }
             break;
         case 0:
             process.exit();
