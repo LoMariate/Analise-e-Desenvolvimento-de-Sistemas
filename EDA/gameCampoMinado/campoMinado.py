@@ -30,13 +30,13 @@ def mostraCampo(campoJogo):
     os.system("cls")
     print("Campo Minado")
     print("============")
-    print("    1  2  3  4  5  6  7  8  9 10")
+    print("    1   2   3   4   5   6   7   8   9  10")
     
     for i in range(10):
-        print(f"{i+1} ", end="")
+        print(f"{i+1:2d}", end="")
         
         for j in range(10):
-            print(f"| {campoJogo[i][j]} ", end="")
+            print(f"|{campoJogo[i][j]:2s}", end="")
             
         print("|")
 
@@ -55,13 +55,10 @@ def verificaVizinhos(campoMinado, x, y):
 def fazJogada(campoJogo, campoMinado):
     while True:
         mostraCampo(campoJogo)
-        jogada = input("Informe a jogada(2 números: linha e coluna): ")
-        if len(jogada) != 2:
-            print("Informe 2 números!")
-            time.sleep(2)
-            continue
-        x = int(jogada[0])-1
-        y = int(jogada[1])-1
+        jogadaLinha = input("Digite a linha: ")
+        jogadaColuna = input("Digite a coluna: ")
+        x = int(jogadaLinha) - 1
+        y = int(jogadaColuna) - 1
         if campoMinado[x][y] == bomba:
             campoJogo[x][y] = bomba
             mostraCampo(campoJogo)
@@ -70,15 +67,23 @@ def fazJogada(campoJogo, campoMinado):
         else:
             campoJogo[x][y] = verificaVizinhos(campoMinado, x, y)
             if campoJogo[x][y] == campoVazio:
-                for i in range(-1, 2):
-                    for j in range(-1, 2):
-                        if x + i >= 0 and x + i < 10 and y + j >= 0 and y + j < 10:
-                            if campoJogo[x + i][y + j] == campoVazio:
-                                campoJogo[x + i][y + j] = verificaVizinhos(campoMinado, x + i, y + j)
+                liberarEspacosVazios(campoJogo, campoMinado, x, y)
             if campoJogo == campoMinado:
                 mostraCampo(campoJogo)
                 print("Você ganhou!")
                 break
+
+def liberarEspacosVazios(campoJogo, campoMinado, x, y):
+    if x < 0 or x >= 10 or y < 0 or y >= 10:
+        return
+    if campoJogo[x][y] != campoVazio:
+        return
+    campoJogo[x][y] = verificaVizinhos(campoMinado, x, y)
+    if campoJogo[x][y] == campoVazio:
+        for i in range(-1, 2):
+            for j in range(-1, 2):
+                liberarEspacosVazios(campoJogo, campoMinado, x + i, y + j)
+
 
 campoJogo, campoMinado = criaCampo(campoJogo, campoMinado)
 campoMinado = preencheCampo(campoMinado)
