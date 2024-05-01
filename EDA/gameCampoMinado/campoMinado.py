@@ -1,13 +1,30 @@
 import random
-import time
 import os
 
 campo = "🟥"
-campoVazio = "⬜"
+campoVazio = "🟩"
 bomba = "💣"
 campoMinado = []
-campoJogo = []
-vizinhos = ["1", "2", "3", "4", "5", "6", "7", "8"]
+campoJogo = [] 
+vizinhos = ["0️⃣  ","1️⃣  ","2️⃣  ","3️⃣  ","4️⃣  ","5️⃣  ","6️⃣  ","7️⃣  ","8️⃣  "]
+
+
+
+
+def gravaJogada(nome, jogadas):
+    with open("jogadas.txt", 'a') as arq:
+        arq.write(f"{nome};{jogadas}\n")
+
+def carregaJogadas():
+    jogadas = []
+    try:
+        with open("jogadas.txt") as arq:
+            for linha in arq:
+                nome, jogada = linha.strip().split(";")
+                jogadas.append((nome, int(jogada)))
+    except FileNotFoundError:
+        pass
+    return jogadas
 
 def criaCampo(campoJogo, campoMinado):
     for i in range(10):
@@ -30,7 +47,7 @@ def mostraCampo(campoJogo):
     os.system("cls")
     print("Campo Minado")
     print("============")
-    print("    1   2   3   4   5   6   7   8   9  10")
+    print("   1   2   3   4   5   6   7   8   9   10")
     
     for i in range(10):
         print(f"{i+1:2d}", end="")
@@ -41,50 +58,82 @@ def mostraCampo(campoJogo):
         print("|")
 
 def verificaVizinhos(campoMinado, x, y):
-    if campoMinado[x][y] == bomba:
-        return bomba
-    else:
-        vizinhos = 0
-        for i in range(-1, 2):
-            for j in range(-1, 2):
-                if x + i >= 0 and x + i < 10 and y + j >= 0 and y + j < 10:
-                    if campoMinado[x + i][y + j] == bomba:
-                        vizinhos += 1
-        return str(vizinhos)
+    z = 0
+    for i in range(-1, 2):
+        for j in range(-1, 2):
+            if campoMinado[x + (1-i)][y + (1-j)] == bomba:
+                i += 1
+    return int(z)
     
 def fazJogada(campoJogo, campoMinado):
+    jogadas = 0
+
     while True:
         mostraCampo(campoJogo)
-        jogadaLinha = input("Digite a linha: ")
-        jogadaColuna = input("Digite a coluna: ")
+        while True:
+            try:
+                jogadaLinha = int(input("Informe a linha: "))
+            except ValueError:
+                print("Linha inválida! Digite um valor entre 1 e 10.")
+                continue
+
+            if jogadaLinha < 1 or jogadaLinha > 10:
+                print("Linha inválida! Digite um valor entre 1 e 10.")
+            else:
+                break
+        while True:
+            try:
+                jogadaColuna = int(input("Informe a coluna: "))
+            except ValueError:
+                print("Coluna inválida! Digite um valor entre 1 e 10.")
+                continue
+
+            if jogadaColuna < 1 or jogadaColuna > 10:
+                print("Coluna inválida! Digite um valor entre 1 e 10.")
+            else:
+                break
+     
         x = int(jogadaLinha) - 1
         y = int(jogadaColuna) - 1
+        jogadas += 1
+
         if campoMinado[x][y] == bomba:
             campoJogo[x][y] = bomba
-            mostraCampo(campoJogo)
+            mostraCampo(campoMinado)
             print("Você perdeu!")
+            gravaJogada(nome, jogadas)
             break
         else:
-            campoJogo[x][y] = verificaVizinhos(campoMinado, x, y)
-            if campoJogo[x][y] == campoVazio:
-                liberarEspacosVazios(campoJogo, campoMinado, x, y)
+            campoJogo[x][y] = str(vizinhos[verificaVizinhos(campoMinado, x, y)])
             if campoJogo == campoMinado:
                 mostraCampo(campoJogo)
                 print("Você ganhou!")
                 break
 
-def liberarEspacosVazios(campoJogo, campoMinado, x, y):
-    if x < 0 or x >= 10 or y < 0 or y >= 10:
-        return
-    if campoJogo[x][y] != campoVazio:
-        return
-    campoJogo[x][y] = verificaVizinhos(campoMinado, x, y)
-    if campoJogo[x][y] == campoVazio:
-        for i in range(-1, 2):
-            for j in range(-1, 2):
-                liberarEspacosVazios(campoJogo, campoMinado, x + i, y + j)
 
 
-campoJogo, campoMinado = criaCampo(campoJogo, campoMinado)
-campoMinado = preencheCampo(campoMinado)
-fazJogada(campoJogo, campoMinado)
+while True:
+    print('|--------------------------------------------|')
+    print('| 1. Jogar                                   |')
+    print('| 2. Ver Ranking                             |')
+    print('| 3. Sair                                    |')
+    print('|--------------------------------------------|')    
+    opcao = input("Escolha..: ")
+    
+    if opcao == '1':
+        nome = input("Informe o seu nome: ")
+        campoJogo, campoMinado = criaCampo(campoJogo, campoMinado)
+        campoMinado = preencheCampo(campoMinado)
+        fazJogada(campoJogo, campoMinado)
+    if opcao == '2':
+        jogadas = carregaJogadas()
+        jogadas.sort(key=lambda x: x[-1])
+        print("Ranking")
+        print("========")
+        for i, j in enumerate(jogadas):
+            print(f"{i+1}º - {j[0]} - {j[1]} jogadas")
+        input("Pressione ENTER para continuar...")
+
+    if opcao == '3':
+        break
+    
