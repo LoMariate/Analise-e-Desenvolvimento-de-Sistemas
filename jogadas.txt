@@ -20,3 +20,5 @@ loto;1
 loto;1
 loto;1
 loto;20
+rei;15
+lk;2
