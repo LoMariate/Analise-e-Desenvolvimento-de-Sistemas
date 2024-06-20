@@ -5,48 +5,73 @@ campo = "🟥"
 campoVazio = "🟩"
 bomba = "💣"
 vizinhos = ["0️⃣  ","1️⃣  ","2️⃣  ","3️⃣  ","4️⃣  ","5️⃣  ","6️⃣  ","7️⃣  ","8️⃣  "]
+linhasTam = ""
 
-def gravaJogada(nome, jogadas):
+def gravaJogada(nome, jogadas, dificuldade):
     with open("jogadas.txt", 'a') as arq:
-        arq.write(f"{nome};{jogadas}\n")
+        arq.write(f"{nome};{jogadas};{dificuldade}\n")
 
 def carregaJogadas():
     jogadas = []
     try:
         with open("jogadas.txt") as arq:
             for linha in arq:
-                nome, jogada = linha.strip().split(";")
-                jogadas.append((nome, int(jogada)))
+                nome, jogada, dificuldade = linha.strip().split(";")
+                jogadas.append((nome, int(jogada), dificuldade))
     except FileNotFoundError:
         pass
+    except ValueError:
+        print("Erro ao carregar o arquivo de ranking")
     return jogadas
 
-def criaCampo():
+def dificuldadeDef():
+    print('|----------Selecione a dificuldade-----------|')
+    print('| 1. Fácil (9x9 - tam Bombas)                 |')
+    print('| 2. Médio (16x16 - 40 Bombas)               |')
+    print('| 3. Difícil (30x16 - 99 Bombas)             |')
+    print('|--------------------------------------------|')
+    escolha = input("Escolha..: ")
+
+    if escolha == '1':
+        linhaTam = "   1   2   3   4   5   6   7   8   9   10"
+        return 9, 9, 9, 'Facil', linhaTam
+    
+    if escolha == '2':
+        linhaTam = "  1   2   3   4   5   6   7   8   9   10  11   12  13  14   15  16"
+        return 16, 16, 40, 'Medio', linhaTam
+    
+    if escolha == '3':
+        linhaTam =  "  1   2   3   4   5   6   7   8   9   10  11   12  13  14   15  16"
+        return 30, 16, 99, 'Dificil', linhaTam
+
+def criaCampo(linhas, colunas):
     campoMinado = []
     campoJogo = []
-    for i in range(tam):
-        campoMinado.append([campo] * tam)
-        campoJogo.append([campo] * tam)
+    for i in range(linhas):
+        campoMinado.append([campo] * colunas)
+        campoJogo.append([campo] * colunas)
     return campoJogo, campoMinado
 
-def preencheCampo(campoMinado):
+def preencheCampo(campoMinado, bombas):
+    linhas = len(campoMinado)
+    colunas = len(campoMinado[0])
     bombasColocadas = 0
-    while bombasColocadas < bomb:
-        x = random.randint(0,tam-1)
-        y = random.randint(0,tam-1)
+    while bombasColocadas < bombas:
+        x = random.randint(0,linhas-1)
+        y = random.randint(0,colunas-1)
         if campoMinado[x][y] != bomba:
             campoMinado[x][y] = bomba
             bombasColocadas += 1
     return campoMinado
 
-def mostraCampo(campoJogo):
+def mostraCampo(campoJogo, linhaTam):
     os.system("cls" if os.name == "nt" else "clear")
     print("Campo Minado")
     print("============")
-    print("   1   2   3   4   5   6   7   8   9   tam")
-    for i in range(tam):
+    print(linhaTam)
+    for i in range(len(campoJogo)):
         print(f"{i+1:2d}", end="")
-        for j in range(tam):
+        for j in range(len(campoJogo[0])):
             print(f"|{campoJogo[i][j]:2s}", end="")            
         print("|")
 
@@ -55,7 +80,7 @@ def verificaVizinhos(campoMinado, x, y):
     for i in range(-1, 2):
         for j in range(-1, 2):
             xi, yj = x + i, y + j
-            if 0 <= xi < tam and 0 <= yj < tam and campoMinado[xi][yj] == bomba:
+            if 0 <= xi < len(campoMinado) and 0 <= yj < len(campoMinado[0]) and campoMinado[xi][yj] == bomba:
                 z += 1
     return z   
     
@@ -72,18 +97,18 @@ def procuraZeros(campoJogo, campoMinado, x, y):
             for i in range(-1, 2):
                 for j in range(-1, 2):
                     fxi, fyj = fx + i, fy + j
-                    if 0 <= fxi < tam and 0 <= fyj < tam and (fxi, fyj) not in visitados:
+                    if 0 <= fxi < len(campoMinado) and 0 <= fyj < len(campoMinado[0]) and (fxi, fyj) not in visitados:
                         fila.append((fxi, fyj))
                         visitados.add((fxi, fyj))
 
-def fazJogada(campoJogo, campoMinado, nome):
+def fazJogada(campoJogo, campoMinado, nome, dificuldade, linhaTam):
     jogadas = 0
     while True:
-        mostraCampo(campoJogo)
+        mostraCampo(campoJogo, linhaTam)
         while True:
             try:
                 jogadaLinha = int(input("Informe a linha: "))
-                if jogadaLinha < 1 or jogadaLinha > tam:
+                if jogadaLinha < 1 or jogadaLinha > len(campoMinado):
                     raise ValueError
                 break
             except ValueError:
@@ -91,7 +116,7 @@ def fazJogada(campoJogo, campoMinado, nome):
         while True:
             try:
                 jogadaColuna = int(input("Informe a coluna: "))
-                if jogadaColuna < 1 or jogadaColuna > tam:
+                if jogadaColuna < 1 or jogadaColuna > len(campoMinado[0]):
                     raise ValueError
                 break
             except ValueError:
@@ -103,9 +128,9 @@ def fazJogada(campoJogo, campoMinado, nome):
 
         if campoMinado[x][y] == bomba:
             campoJogo[x][y] = bomba
-            mostraCampo(campoMinado)
+            mostraCampo(campoMinado, linhaTam)
             print("Você perdeu!")
-            gravaJogada(nome, jogadas)
+            gravaJogada(nome, jogadas, dificuldade)
             break
         else:
             numVizinhos = verificaVizinhos(campoMinado, x, y)
@@ -114,10 +139,10 @@ def fazJogada(campoJogo, campoMinado, nome):
             else:
                 campoJogo[x][y] = vizinhos[numVizinhos]
             
-            if all(campoJogo[i][j] != campo for i in range(tam) for j in range(tam) if campoMinado[i][j] != bomba):
+            if all(campoJogo[i][j] != campo for i in range(len(campoMinado)) for j in range(len(campoMinado[0])) if campoMinado[i][j] != bomba):
                 mostraCampo(campoJogo)
                 print("Você ganhou!")
-                gravaJogada(nome, jogadas)
+                gravaJogada(nome, jogadas, dificuldade)
                 break
 
 while True:
@@ -129,36 +154,18 @@ while True:
     opcao = input("Escolha..: ")
     
     if opcao == '1':
-        print('|----------Selecione a dificuldade-----------|')
-        print('| 1. Fácil (9x9 - tam Bombas)                 |')
-        print('| 2. Médio (16x16 - 40 Bombas)               |')
-        print('| 3. Difícil (30x16 - 99 Bombas)             |')
-        print('|--------------------------------------------|')
-        dificuldade = input("Escolha..: ")
-        
-        if dificuldade == '1':
-            tam = 9
-            bomb = tam
-        
-        if dificuldade == '2':
-            tam = 16
-            bomb = 40
-        
-        if dificuldade == '3':
-            tam = 30
-            bomb = 99
-
         nome = input("Informe o seu nome: ")
-        campoJogo, campoMinado = criaCampo()
-        campoMinado = preencheCampo(campoMinado)
-        fazJogada(campoJogo, campoMinado, nome)
+        linhas, colunas, bombas, dificuldade, linhaTam = dificuldadeDef()
+        campoJogo, campoMinado = criaCampo(linhas, colunas)
+        campoMinado = preencheCampo(campoMinado, bombas)
+        fazJogada(campoJogo, campoMinado, nome, dificuldade, linhaTam)
     if opcao == '2':
         jogadas = carregaJogadas()
         jogadas.sort(key=lambda x: x[-1], reverse=True)
         print("Ranking")
         print("========")
         for i, j in enumerate(jogadas):
-            print(f"{i+1}º - {j[0]} - {j[1]} jogadas")
+            print(f"{i+1}º - {j[0]} - {j[1]} jogadas - {j[2]}")
         input("Pressione ENTER para continuar...")
     if opcao == '3':
         break
