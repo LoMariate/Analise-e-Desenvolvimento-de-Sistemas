@@ -1,0 +1,7 @@
+Lipe;2;Facil;False
+Geto;10;Facil;True
+Eliane;7;Facil;True
+Mateus;5;Medio;False
+Lipe;5;Medio;Derrota
+Mateus;1;Facil;Derrota
+Mateus;19;Facil;Vitória

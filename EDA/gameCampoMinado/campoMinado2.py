@@ -2,22 +2,23 @@ import random
 import os
 
 campo = "🟥"
-campoVazio = "🟩"
 bomba = "💣"
 vizinhos = ["0️⃣  ","1️⃣  ","2️⃣  ","3️⃣  ","4️⃣  ","5️⃣  ","6️⃣  ","7️⃣  ","8️⃣  "]
-linhasTam = ""
+colunaNum = ""
+condicao = False
 
-def gravaJogada(nome, jogadas, dificuldade):
+def gravaJogada(nome, jogadas, dificuldade, condicao):
+    winloss = "Vitória" if condicao else "Derrota"
     with open("jogadas.txt", 'a') as arq:
-        arq.write(f"{nome};{jogadas};{dificuldade}\n")
+        arq.write(f"{nome};{jogadas};{dificuldade};{winloss}\n")
 
 def carregaJogadas():
     jogadas = []
     try:
         with open("jogadas.txt") as arq:
             for linha in arq:
-                nome, jogada, dificuldade = linha.strip().split(";")
-                jogadas.append((nome, int(jogada), dificuldade))
+                nome, jogada, dificuldade, condicao = linha.strip().split(";")
+                jogadas.append((nome, int(jogada), dificuldade, condicao))
     except FileNotFoundError:
         pass
     except ValueError:
@@ -26,23 +27,23 @@ def carregaJogadas():
 
 def dificuldadeDef():
     print('|----------Selecione a dificuldade-----------|')
-    print('| 1. Fácil (9x9 - tam Bombas)                 |')
+    print('| 1. Fácil (9x9 - 9 Bombas)                  |')
     print('| 2. Médio (16x16 - 40 Bombas)               |')
     print('| 3. Difícil (30x16 - 99 Bombas)             |')
     print('|--------------------------------------------|')
     escolha = input("Escolha..: ")
 
     if escolha == '1':
-        linhaTam = "   1   2   3   4   5   6   7   8   9   10"
-        return 9, 9, 9, 'Facil', linhaTam
+        colunaNum = "   1   2   3   4   5   6   7   8   9"
+        return 9, 9, 9, 'Facil', colunaNum
     
-    if escolha == '2':
-        linhaTam = "  1   2   3   4   5   6   7   8   9   10  11   12  13  14   15  16"
-        return 16, 16, 40, 'Medio', linhaTam
-    
-    if escolha == '3':
-        linhaTam =  "  1   2   3   4   5   6   7   8   9   10  11   12  13  14   15  16"
-        return 30, 16, 99, 'Dificil', linhaTam
+    elif escolha == '2':
+        colunaNum = "  1   2   3   4   5   6   7   8   9   10  11   12  13  14   15  16"
+        return 16, 16, 40, 'Medio', colunaNum 
+       
+    elif escolha == '3':
+        colunaNum =  "  1   2   3   4   5   6   7   8   9   10  11   12  13  14   15  16"
+        return 30, 16, 99, 'Dificil', colunaNum
 
 def criaCampo(linhas, colunas):
     campoMinado = []
@@ -64,11 +65,11 @@ def preencheCampo(campoMinado, bombas):
             bombasColocadas += 1
     return campoMinado
 
-def mostraCampo(campoJogo, linhaTam):
+def mostraCampo(campoJogo,  colunaNum):
     os.system("cls" if os.name == "nt" else "clear")
     print("Campo Minado")
     print("============")
-    print(linhaTam)
+    print(colunaNum)
     for i in range(len(campoJogo)):
         print(f"{i+1:2d}", end="")
         for j in range(len(campoJogo[0])):
@@ -101,10 +102,10 @@ def procuraZeros(campoJogo, campoMinado, x, y):
                         fila.append((fxi, fyj))
                         visitados.add((fxi, fyj))
 
-def fazJogada(campoJogo, campoMinado, nome, dificuldade, linhaTam):
+def fazJogada(campoJogo, campoMinado, nome, dificuldade, condicao, colunaNum):
     jogadas = 0
     while True:
-        mostraCampo(campoJogo, linhaTam)
+        mostraCampo(campoJogo, colunaNum)
         while True:
             try:
                 jogadaLinha = int(input("Informe a linha: "))
@@ -112,7 +113,7 @@ def fazJogada(campoJogo, campoMinado, nome, dificuldade, linhaTam):
                     raise ValueError
                 break
             except ValueError:
-                print("Linha inválida! Digite um valor entre 1 e tam.")
+                print(f"Linha inválida! Digite um valor entre 1 e {len(campoMinado)}.")
         while True:
             try:
                 jogadaColuna = int(input("Informe a coluna: "))
@@ -120,17 +121,18 @@ def fazJogada(campoJogo, campoMinado, nome, dificuldade, linhaTam):
                     raise ValueError
                 break
             except ValueError:
-                print("Coluna inválida! Digite um valor entre 1 e tam.")
+                print(f"Coluna inválida! Digite um valor entre 1 e {len(campoMinado[0])}.")
 
         x = jogadaLinha - 1
         y = jogadaColuna - 1
         jogadas += 1
 
         if campoMinado[x][y] == bomba:
+            condicao = False
             campoJogo[x][y] = bomba
-            mostraCampo(campoMinado, linhaTam)
+            mostraCampo(campoMinado, colunaNum)
             print("Você perdeu!")
-            gravaJogada(nome, jogadas, dificuldade)
+            gravaJogada(nome, jogadas, dificuldade, condicao)
             break
         else:
             numVizinhos = verificaVizinhos(campoMinado, x, y)
@@ -140,9 +142,10 @@ def fazJogada(campoJogo, campoMinado, nome, dificuldade, linhaTam):
                 campoJogo[x][y] = vizinhos[numVizinhos]
             
             if all(campoJogo[i][j] != campo for i in range(len(campoMinado)) for j in range(len(campoMinado[0])) if campoMinado[i][j] != bomba):
-                mostraCampo(campoJogo)
+                condicao = True
+                mostraCampo(campoJogo, colunaNum)
                 print("Você ganhou!")
-                gravaJogada(nome, jogadas, dificuldade)
+                gravaJogada(nome, jogadas, dificuldade, condicao)
                 break
 
 while True:
@@ -155,18 +158,18 @@ while True:
     
     if opcao == '1':
         nome = input("Informe o seu nome: ")
-        linhas, colunas, bombas, dificuldade, linhaTam = dificuldadeDef()
+        linhas, colunas, bombas, dificuldade, colunaNum = dificuldadeDef()
         campoJogo, campoMinado = criaCampo(linhas, colunas)
         campoMinado = preencheCampo(campoMinado, bombas)
-        fazJogada(campoJogo, campoMinado, nome, dificuldade, linhaTam)
-    if opcao == '2':
+        fazJogada(campoJogo, campoMinado, nome, dificuldade, condicao, colunaNum)
+    elif opcao == '2':
         jogadas = carregaJogadas()
-        jogadas.sort(key=lambda x: x[-1], reverse=True)
+        jogadas.sort(key=lambda x: x[1], reverse=True)
         print("Ranking")
         print("========")
         for i, j in enumerate(jogadas):
-            print(f"{i+1}º - {j[0]} - {j[1]} jogadas - {j[2]}")
+            print(f"{i+1}º - {j[0]} - {j[1]} jogadas - {j[2]} - {j[3]}")
         input("Pressione ENTER para continuar...")
-    if opcao == '3':
+    elif opcao == '3':
         break
     
