@@ -1,0 +1,8 @@
+Trabalho #3 – Uso de Estruturas de Dados para Manipulação de APIs
+
+Desenvolver uma aplicação em Python que manipule os dados de uma API (de preferência, a desenvolvida
+para o trabalho #3 de APIs).
+A aplicação deve apresentar um menu contendo opções para realizar as seguintes operações:
+1. Realizar o CRUD (Create, Retrive, Update e Delete) dos dados manipulados pela API
+2. Realizar algum agrupamento ou filtro ordenado dos dados a serem exibidos
+3. Construir um gráfico comparativo dos dados 
