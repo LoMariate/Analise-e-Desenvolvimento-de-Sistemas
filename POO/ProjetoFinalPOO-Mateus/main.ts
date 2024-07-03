@@ -1,5 +1,6 @@
 import prompt from 'prompt-sync'
 import { Livro } from './classes/livros'
+import { Membro } from './classes/membros'
 
 
 
@@ -87,10 +88,25 @@ while (true) {
 
             switch (escolhaMembro) {
                 case 1:
-                    console.log("Adicionar novo membro")
+                    console.log(interfaceMembro)
+
+                    const novoMembro = Membro.CadastrarMembro()
+                    // SalvarSVCMembro
+
+                    console.log("Membro cadastrado com sucesso!")
+                    novoMembro.exibirMembro()
+
+                    console.log(interfaceFinal)
+                    teclado("Pressione Enter para continuar")
                     break;
                 case 2:
-                    console.log("Listar todos os membros cadastrados")
+                    console.log(interfaceMembro)
+                        
+                    console.log("| Listagem de Membros cadastrados                   |")
+                    // Membro.carregarMembrosCSV()
+                    
+                    console.log(interfaceFinal)
+                    teclado("Pressione Enter para continuar...")
                     break;
                 case 3:
                     console.log("Atualizar informações de um membro")
