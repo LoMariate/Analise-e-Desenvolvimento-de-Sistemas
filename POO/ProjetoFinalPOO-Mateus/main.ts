@@ -75,48 +75,54 @@ while (true) {
             
         break;    
         case 2:
-            console.clear()
-            console.log(interfaceMembro)
-            console.log("| 1. Adicionar novo membro                          |")
-            console.log("| 2. Listar todos os membros cadastrados            |")
-            console.log("| 3. Atualizar informações de um membro             |")
-            console.log("| 4. Remover um membro do cadastro                  |")
-            console.log("| 0. Voltar                                         |")
-            console.log(interfaceFinal)
+            while (true) {
+                console.clear()
+                console.log(interfaceMembro)
+                console.log("| 1. Adicionar novo membro                          |")
+                console.log("| 2. Listar todos os membros cadastrados            |")
+                console.log("| 3. Atualizar informações de um membro             |")
+                console.log("| 4. Remover um membro do cadastro                  |")
+                console.log("| 0. Voltar                                         |")
+                console.log(interfaceFinal)
 
-            let escolhaMembro: number = +teclado("Informe sua escolha: ")
+                let escolhaMembro: number = +teclado("Informe sua escolha: ")
 
-            switch (escolhaMembro) {
-                case 1:
-                    console.log(interfaceMembro)
+                switch (escolhaMembro) {
+                    case 1:
+                        console.log(interfaceMembro)
 
-                    const novoMembro = Membro.CadastrarMembro()
-                    // SalvarSVCMembro
+                        const novoMembro = Membro.CadastrarMembro()
+                        Membro.salvarMembrosCSV(novoMembro)
 
-                    console.log("Membro cadastrado com sucesso!")
-                    novoMembro.exibirMembro()
+                        console.log("Membro cadastrado com sucesso!")
+                        novoMembro.exibirMembro()
 
-                    console.log(interfaceFinal)
-                    teclado("Pressione Enter para continuar")
-                    break;
-                case 2:
-                    console.log(interfaceMembro)
+                        console.log(interfaceFinal)
+                        teclado("Pressione Enter para continuar")
+                        break;
+                    case 2:
+                        console.log(interfaceMembro)
+                            
+                        console.log("| Listagem de Membros cadastrados                   |")
+                        Membro.carregarMembrosCSV()
                         
-                    console.log("| Listagem de Membros cadastrados                   |")
-                    // Membro.carregarMembrosCSV()
-                    
-                    console.log(interfaceFinal)
-                    teclado("Pressione Enter para continuar...")
+                        console.log(interfaceFinal)
+                        teclado("Pressione Enter para continuar...")
+                        break;
+                    case 3:
+                        console.log("Atualizar informações de um membro")
+                        break;
+                    case 4:
+                        console.log("Remover um membro do cadastro")
+                        break;
+                    case 0:
+                        console.clear()
+                        break;
+                    }
+
+                if (escolhaMembro === 0) {
                     break;
-                case 3:
-                    console.log("Atualizar informações de um membro")
-                    break;
-                case 4:
-                    console.log("Remover um membro do cadastro")
-                    break;
-                case 0:
-                    console.clear()
-                    break;
+                }
             }
 
         break;
