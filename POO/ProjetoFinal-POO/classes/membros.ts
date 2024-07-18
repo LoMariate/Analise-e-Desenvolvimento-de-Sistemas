@@ -4,25 +4,22 @@
 //      - Atualizar informações de um membro.
 //      - Remover um membro do cadastro.
 
+import { Pessoa } from './pessoa'
 import prompt from 'prompt-sync'
 import fs from 'fs'
 import path from 'path'
 
+
 const teclado = prompt()
 
-class Membro {
-    private _nome: string;
-    private _NumMatricula: number;
-    private _endereco: string;
-    private _telefone: number;
+class Membro extends Pessoa{
 
+    private _NumMatricula: number;
     private static matriculasUsadas: Set<number> = new Set()
 
     constructor(nome: string, NumMatricula: number, endereco: string, telefone: number){
-        this._nome = nome
+        super(nome, endereco, telefone)
         this._NumMatricula = NumMatricula
-        this._endereco = endereco
-        this._telefone = telefone
     }
 
     static CadastrarMembro(){

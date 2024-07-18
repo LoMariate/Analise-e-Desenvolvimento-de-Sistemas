@@ -1,6 +1,7 @@
 import prompt from 'prompt-sync'
 import { Livro } from './classes/livros'
 import { Membro } from './classes/membros'
+import { Emprestimo } from './classes/emprestimos'
 
 const teclado = prompt()
 
@@ -40,6 +41,7 @@ while (true) {
                         console.clear()
                         console.log(interfaceLivro)
 
+                        console.log("| Adicionar novo livro                              |")
                         const novoLivro = Livro.cadastrarLivro()
                         Livro.salvarLivroCSV(novoLivro)
                         
@@ -201,35 +203,70 @@ while (true) {
 
         break;
         case 3:
-            console.clear()
-            console.log(interfaceEmprestimo)
-            console.log("| 1. Realizar empréstimo de um livro para um membro |")
-            console.log("| 2. Listar todos os empréstimos ativos             |")
-            console.log("| 3. Registrar devolução de um livro                |")
-            console.log("| 4. Listar histórico de empréstimos                |")
-            console.log("| 0. Voltar                                         |")
-            console.log(interfacetraco)
+            while (true) {
+                console.clear()
+                console.log(interfaceEmprestimo)
+                console.log("| 1. Realizar empréstimo de um livro para um membro |")
+                console.log("| 2. Listar todos os empréstimos ativos             |")
+                console.log("| 3. Registrar devolução de um livro                |")
+                console.log("| 4. Listar histórico de empréstimos                |")
+                console.log("| 0. Voltar                                         |")
+                console.log(interfacetraco)
 
-            let escolhaEmprestimo: number = +teclado("Informe sua escolha: ")
+                let escolhaEmprestimo: number = +teclado("Informe sua escolha: ")
 
-            switch (escolhaEmprestimo) {
-                case 1:
-                    console.log("Realizar empréstimo de um livro para um membro")
+                switch (escolhaEmprestimo) {
+                    case 1:
+                        console.clear()
+                    
+                        console.log(interfaceEmprestimo)
+                        console.log("| Realizar empréstimo de um livro para um membro    |")
+                        const novoEmprestimo = Emprestimo.cadastrarEmprestimo()
+                        
+                        console.log(interfacetraco)
+                        console.log("| Empréstimo realizado com sucesso!                 |")
+                        novoEmprestimo.exibirEmprestimo()    
+                        
+                        console.log(interfacetraco)
+                        teclado("Pressione Enter para continuar...")
+                        break;
+                    case 2:
+                        console.clear()
+                        console.log(interfaceEmprestimo)
+                        console.log("| Listar todos os empréstimos ativos                |")
+                        Emprestimo.listarEmprestimosAtivos()
+
+                        console.log(interfacetraco)
+                        teclado("Pressione Enter para continuar...")
+                        break;
+                    case 3:
+                        console.clear()
+                        console.log(interfaceEmprestimo)
+                        console.log("| Registrar devolução de um livro                   |")
+                        Emprestimo.listarEmprestimosAtivos()
+                        const idEmprestimo: number = +teclado("Informe o ID do empréstimo: ")
+                        Emprestimo.registrarDevolucao(idEmprestimo)
+
+                        console.log(interfacetraco)
+                        teclado("Pressione Enter para continuar...")
+                        break;
+                    case 4:
+                        console.clear()
+                        console.log(interfaceEmprestimo)
+                        console.log("| Listar histórico de empréstimos                   |")
+                        Emprestimo.listarHistoricoEmprestimos()
+                        console.log(interfacetraco)
+                        teclado("Pressione Enter para continuar...")
+                        break;
+                    case 0:
+                        console.clear()
+                        break;       
+                }
+
+                if (escolhaEmprestimo === 0) {
                     break;
-                case 2:
-                    console.log("Listar todos os empréstimos ativos")
-                    break;
-                case 3:
-                    console.log("Registrar devolução de um livro")
-                    break;
-                case 4:
-                    console.log("Listar histórico de empréstimos")
-                    break;
-                case 0:
-                    console.clear()
-                    break;
+                }
             }
-
             break;
         case 0:
             console.log("Saindo do sistema...")

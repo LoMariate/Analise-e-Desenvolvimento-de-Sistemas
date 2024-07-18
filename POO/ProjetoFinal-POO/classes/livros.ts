@@ -1,37 +1,24 @@
-// 1. **Cadastro de Livros**
-//      - Adicionar novo livro (com atributos como título, autor, ISBN, ano de publicação).
-//      - Listar todos os livros cadastrados.
-//      - Atualizar informações de um livro.
-//      - Remover um livro do cadastro.
-
-// - **Manipulação de Arquivos:**
-// - Salvar e carregar os dados dos livros, membros e empréstimos de/para arquivos para garantir a persistência dos dados.
-// - Utilizar arquivos de texto ou CSV para armazenamento.
-
-// Importa os módulos necessários
 import prompt from 'prompt-sync' 
 import fs from 'fs'
 import path from 'path'
 
 const teclado = prompt()
 
-// Criando a classe livro
 class Livro {
     private _titulo: string
     private _autor: string
     private _isbn: number
     private _anoPublicacao: number
 
-    constructor(titulo: string, autor: string, isbn: number, anoPublicacao: number) { // Construtor da classe para inicializar os atributos
+    constructor(titulo: string, autor: string, isbn: number, anoPublicacao: number) {
         this._titulo = titulo
         this._autor = autor
         this._isbn = isbn
         this._anoPublicacao = anoPublicacao
     }
 
-    // Método para cadastrar um livro
     static cadastrarLivro() {
-        let titulo: string;  // Armazena o título do livro, é utilizado um "WHILE" para garantir que o título tenha ao menos um caracterer
+        let titulo: string; 
             while (true) {
                 titulo = teclado("Informe o título do livro: ")
                 if (titulo.length > 0) {
@@ -41,7 +28,7 @@ class Livro {
                 }
             }
 
-        let autor: string; // Armazena o autor do livro, é utilizado um "WHILE" para garantir que o autor tenha ao menos um caracterer
+        let autor: string;
             while (true) {
                 autor = teclado("Informe o autor do livro: ")
                 if (autor.length > 0) {
@@ -51,7 +38,7 @@ class Livro {
                 }
             }
 
-        let isbn: number; // Armazena o ISBN do livro, é utilizado um "WHILE" para garantir que o ISBN tenha 10 ou 13 dígitos
+        let isbn: number;
             while (true) {
                 isbn = +teclado("Informe o ISBN do livro: ")
                 if (isbn.toString().length === 10 || isbn.toString().length === 13) {
@@ -61,7 +48,7 @@ class Livro {
                 }
             }
 
-        let anoPublicacao: number; // Armazena o ano de publicação do livro, é utilizado um "WHILE" para garantir que o ano seja menor ou igual ao ano atual
+        let anoPublicacao: number;
         const anoAtual = new Date().getFullYear()
             while (true) {
                 anoPublicacao = +teclado("Informe o ano de publicação do livro: ")
@@ -75,7 +62,6 @@ class Livro {
         return new Livro(titulo, autor, isbn, anoPublicacao)  
     }
 
-    // Método para exibir o livro na hora do cadastro
     exibirLivro() {
         console.log("Título: ", this._titulo)
         console.log("Autor: ", this._autor)
@@ -89,8 +75,7 @@ class Livro {
     
         if (fs.existsSync(caminhoArquivo)){
             const data = fs.readFileSync(caminhoArquivo, 'utf-8')
-            const linhas = data.split('\n').filter(linha => linha.trim() !== '')      // Filtra as linhas vazias
-    
+            const linhas = data.split('\n').filter(linha => linha.trim() !== '')  
             linhas.forEach((linha, index) => {
                 if (index + 1 === idLivro) {
                     const dados = `${livroAtualizado._titulo},${livroAtualizado._autor},${livroAtualizado._isbn},${livroAtualizado._anoPublicacao}`
@@ -100,7 +85,6 @@ class Livro {
                 }
             });
         }
-    
         fs.writeFileSync(caminhoArquivo, livros.join('\n'), 'utf-8')
     }
 
@@ -111,22 +95,20 @@ class Livro {
         if (fs.existsSync(caminhoArquivo)){
             const data = fs.readFileSync(caminhoArquivo, 'utf-8');
             const linhas = data.split('\n').filter(linha => linha.trim() !== '')
-
             linhas.forEach((linha, index) => {
                 if (index + 1 !== idLivro) {
                     livros.push(linha)
                 }
             })
         }
-
         fs.writeFileSync(caminhoArquivo, livros.join('\n'), 'utf-8')
     }
 
     static salvarLivroCSV(livro: Livro){
-        const pastaData = path.join('.', 'data')                       // Determinando o caminho para a pasta data onde será salvo o arquivo CSV
+        const pastaData = path.join('.', 'data')                     
         const caminhoArquivo = path.join(pastaData, 'livros.csv')
     
-        if (!fs.existsSync(pastaData)){                                 // Verifica se a pasta data já existe, se não existir, cria a pasta
+        if (!fs.existsSync(pastaData)){                             
             fs.mkdirSync(pastaData)
         }
     
@@ -136,7 +118,6 @@ class Livro {
             const data = fs.readFileSync(caminhoArquivo, 'utf-8');
             const linhas = data.split('\n').filter(linha => linha.trim() !== '')
     
-            // Adiciona uma nova linha se a última linha não estiver vazia
             if (linhas.length > 0 && linhas[linhas.length - 1].trim() !== '') {
                 dados = `\n${dados}`
             }
